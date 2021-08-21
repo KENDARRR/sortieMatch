@@ -60,7 +60,6 @@ void List::printAll(){
 	}
 }
 //
-
 //--Evidently Structs have better performance than classes. I should try an alternate version with structs
 
 
@@ -75,19 +74,9 @@ int checkAt(string text, string pattern, int n){ //1 on success, -1 on fail.
 	return 1;
 }
 
-int hoorspool(string text, string pattern){
-	int m = text.length();
-	int n = pattern.length();
+int hoorspool(string text, string pattern, int* tab, int m, int n){
 	if(m < n){
 		return -1;
-	}
-	int tab[128];
-	for(int i = 0; i < 128; ++i){
-		tab[i] = n;
-	}
-	
-	for(int i = 0; i < n-1; ++i){
-		tab[pattern[i]] = (n-1) - i;
 	}
 	
 	int s = 0;
@@ -317,9 +306,9 @@ int main(){
 	List ** pro = prep(itab, text);
 	cout << "////////\nTest for sortie PLUS pattern matching algorithm:" << endl;
 	
-	s = clock();
 	pl = pat.length();
 	tl = text.length();
+	s = clock();
 	r = end_sortie_plus(text, pat, pro, itab, pl, tl);
 	e = clock();
 	tt = (double(e - s) /double(CLOCKS_PER_SEC));
@@ -353,8 +342,20 @@ int main(){
 	cout << " sec(s)." << endl;
 
 	cout << "////////\nTest for Horspool's pattern matching algorithm:" << endl;
+	//pre-processing
+	
+	int htab[128];
+	pl = pat.length();
+	tl = text.length();
+	for(int i = 0; i < 128; ++i){
+		htab[i] = pl;
+	}
+	
+	for(int i = 0; i < pl-1; ++i){
+		htab[pat[i]] = (pl-1) - i;
+	}
 	s = clock();	
-	r = hoorspool(text, pat);
+	r = hoorspool(text, pat, htab, tl, pl);
 	e = clock();
 	tt = (double(e - s) /double(CLOCKS_PER_SEC));
 	cout << "At index : " << r << endl;
